@@ -1,0 +1,6 @@
+title,artist,genre,file_path
+"Shape of You","Ed Sheeran","Pop","/path/to/songs/shape_of_you.mp3"
+"Blinding Lights","The Weeknd","Synthwave","/path/to/songs/blinding_lights.mp3"
+"Someone Like You","Adele","Pop","/path/to/songs/someone_like_you.mp3"
+"Hotel California","Eagles","Rock","/path/to/songs/hotel_california.mp3"
+"Bohemian Rhapsody","Queen","Rock","/path/to/songs/bohemian_rhapsody.mp3"

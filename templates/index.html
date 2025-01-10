@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>歌唱评估系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        #audioFile {
+            margin: 20px 0;
+            width: 100%;
+            padding: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            text-align: left;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎤 歌唱能力评估系统</h1>
+        
+        <input type="file" id="audioFile" accept="audio/*">
+        <button onclick="processAudio()">开始分析</button>
+        
+        <div id="result">
+            <p>上传音频文件，系统将为您提供专业的歌唱评估</p>
+        </div>
+    </div>
+
+    <script>
+        function processAudio() {
+            const fileInput = document.getElementById('audioFile');
+            const resultDiv = document.getElementById('result');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('请选择音频文件');
+                return;
+            }
+
+            resultDiv.innerHTML = '正在分析，请稍候... 🎵';
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/process', {  // 修改为相对路径
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                let resultHTML = `
+                    <h2>🎵 专业歌唱评估报告</h2>
+                    
+                    <h3>综合评分: ${data.evaluation.overall_score} 分</h3>
+                    
+                    <h3>音高分析</h3>
+                    <p>平均音高: ${data.evaluation.pitch_analysis.mean_pitch.toFixed(2)} Hz</p>
+                    <p>音高稳定性: ${data.evaluation.pitch_analysis.pitch_quality}</p>
+                    
+                    <h3>节奏分析</h3>
+                    <p>节奏: ${data.evaluation.rhythm_analysis.tempo.toFixed(2)} BPM</p>
+                    <p>节奏稳定性: ${data.evaluation.rhythm_analysis.rhythm_quality}</p>
+                    
+                    <h3>音色分析</h3>
+                    <p>音色特征: ${data.evaluation.timbre_analysis.timbre_quality}</p>
+                    
+                    <h3>气息分析</h3>
+                    <p>气息质量: ${data.evaluation.breath_analysis.breath_quality}</p>
+                    
+                    <h3>改进建议</h3>
+                    <ul>
+                        ${data.evaluation.improvement_suggestions.map(suggestion => 
+                            `<li>${suggestion}</li>`
+                        ).join('')}
+                    </ul>
+                    
+                    <h3>推荐歌曲</h3>
+                    <pre>${JSON.stringify(data.recommended_songs, null, 2)}</pre>
+                    
+                    <h3>AI演唱</h3>
+                    <p>AI生成路径: ${data.ai_singing_path}</p>
+                `;
+                resultDiv.innerHTML = resultHTML;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `分析失败: ${error}`;
+            });
+        }
+    </script>
+</body>
+</html>
