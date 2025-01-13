@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import soundfile as sf
+import database  # Ensure this import is present
 
 class SongRecommendation:
     @staticmethod
